@@ -3,9 +3,6 @@ require "serverspec"
 
 package = "opensearch-dashboards"
 service = "opensearch-dashboards"
-config  = "/etc/opensearch_dashboards/opensearch_dashboards.conf"
-user    = "www"
-group   = "www"
 ports   = [5601]
 config_dir = case os[:family]
              when "freebsd"
@@ -13,7 +10,6 @@ config_dir = case os[:family]
              else
                "/etc/opensearch-dashboards"
              end
-
 config = "#{config_dir}/opensearch_dashboards.yml"
 
 describe package(package) do
