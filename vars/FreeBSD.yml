@@ -1,0 +1,3 @@
+---
+__opensearch_dashboards_db_dir: /var/db/opensearch_dashboards
+__opensearch_dashboards_conf_dir: /usr/local/etc/opensearch_dashboards

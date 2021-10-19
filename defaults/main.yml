@@ -1,0 +1,9 @@
+---
+opensearch_dashboards_user: opensearch_dashboards
+opensearch_dashboards_group: opensearch_dashboards
+opensearch_dashboards_log_dir: /var/log/opensearch_dashboards
+opensearch_dashboards_db_dir: "{{ __opensearch_dashboards_db_dir }}"
+opensearch_dashboards_service: opensearch_dashboards
+opensearch_dashboards_conf_dir: "{{ __opensearch_dashboards_conf_dir }}"
+opensearch_dashboards_conf_file: "{{ __opensearch_dashboards_conf_dir }}/opensearch_dashboards.conf"
+opensearch_dashboards_flags: ""

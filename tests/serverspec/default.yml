@@ -1,0 +1,6 @@
+---
+- hosts: localhost
+  roles:
+    - ansible-role-opensearch_dashboards
+  vars:
+    opensearch_dashboards_config: ""

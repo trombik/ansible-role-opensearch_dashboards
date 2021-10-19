@@ -1,0 +1,6 @@
+---
+
+- name: Install opensearch_dashboards
+  pkgng:
+    name: opensearch_dashboards
+    state: present
