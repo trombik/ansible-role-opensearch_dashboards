@@ -1,6 +1,11 @@
 ---
 
-- name: Install opensearch_dashboards
-  pkgng:
-    name: opensearch_dashboards
+- name: Install opensearch_dashboards_package
+  ansible.builtin.pkgng:
+    name: "{{ opensearch_dashboards_package }}"
     state: present
+
+- name: Enable opensearch_dashboards_service
+  ansible.builtin.service:
+    name: "{{ opensearch_dashboards_service }}"
+    enabled: yes

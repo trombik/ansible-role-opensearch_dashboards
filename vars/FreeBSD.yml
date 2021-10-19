@@ -1,3 +1,7 @@
 ---
-__opensearch_dashboards_db_dir: /var/db/opensearch_dashboards
-__opensearch_dashboards_conf_dir: /usr/local/etc/opensearch_dashboards
+__opensearch_dashboards_user: www
+__opensearch_dashboards_group: www
+__opensearch_dashboards_package: opensearch-dashboards
+__opensearch_dashboards_conf_dir: /usr/local/etc/opensearch-dashboards
+__opensearch_dashboards_log_dir: /var/log
+__opensearch_dashboards_service: opensearch-dashboards

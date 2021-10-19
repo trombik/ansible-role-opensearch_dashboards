@@ -1,9 +1,11 @@
 ---
-opensearch_dashboards_user: opensearch_dashboards
-opensearch_dashboards_group: opensearch_dashboards
-opensearch_dashboards_log_dir: /var/log/opensearch_dashboards
-opensearch_dashboards_db_dir: "{{ __opensearch_dashboards_db_dir }}"
-opensearch_dashboards_service: opensearch_dashboards
+opensearch_dashboards_user: "{{ __opensearch_dashboards_user }}"
+opensearch_dashboards_group: "{{ __opensearch_dashboards_group }}"
+opensearch_dashboards_package: "{{ __opensearch_dashboards_package }}"
+opensearch_dashboards_log_dir: "{{ __opensearch_dashboards_log_dir }}"
+opensearch_dashboards_service: "{{ __opensearch_dashboards_service }}"
 opensearch_dashboards_conf_dir: "{{ __opensearch_dashboards_conf_dir }}"
-opensearch_dashboards_conf_file: "{{ __opensearch_dashboards_conf_dir }}/opensearch_dashboards.conf"
+opensearch_dashboards_conf_file: "{{ opensearch_dashboards_conf_dir }}/opensearch_dashboards.yml"
+opensearch_dashboards_bind_address: localhost
+opensearch_dashboards_bind_port: 5601
 opensearch_dashboards_flags: ""
