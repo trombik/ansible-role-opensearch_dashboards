@@ -53,11 +53,11 @@ src_dir = "/var/dist"
 src_dist_name = "opensearch-dashboards-1.1.0"
 src_root_dir = "/var/www/opensearch-dashboards"
 bin_dir = case os[:family]
-             when "freebsd"
-               "/usr/local/www/opensearch-dashboards/bin"
-             when "ubuntu"
-               "#{src_root_dir}/bin"
-             end
+          when "freebsd"
+            "/usr/local/www/opensearch-dashboards/bin"
+          when "ubuntu"
+            "#{src_root_dir}/bin"
+          end
 
 case install_method
 when "src"
@@ -85,7 +85,7 @@ when "src"
     it { should be_grouped_into default_group }
   end
 
-  %w[ sig_verified key_verified key_imported src_extracted ].each do |f|
+  %w[sig_verified key_verified key_imported src_extracted].each do |f|
     describe file "#{src_dir}/.#{f}-#{src_dist_name}" do
       it { should exist }
       it { should be_file }
@@ -96,17 +96,17 @@ when "src"
   end
 
   describe file "/etc/systemd/system/opensearch-dashboards.service" do
-      it { should exist }
-      it { should be_symlink }
+    it { should exist }
+    it { should be_symlink }
   end
 
   describe file "/lib/systemd/system/opensearch-dashboards.service" do
-      it { should exist }
-      it { should be_file }
-      it { should be_mode 644 }
-      it { should be_owned_by default_user }
-      it { should be_grouped_into default_group }
-      its(:content) { should match(/Managed by ansible/) }
+    it { should exist }
+    it { should be_file }
+    it { should be_mode 644 }
+    it { should be_owned_by default_user }
+    it { should be_grouped_into default_group }
+    its(:content) { should match(/Managed by ansible/) }
   end
 
   describe file "/home/vagrant/.gnupg" do
@@ -137,12 +137,9 @@ describe file data_dir do
 end
 
 describe file log_dir do
-  case os[:family]
-  when "freebsd"
-    # XXX /var/log
-    it { should exist }
-    it { should be_directory }
-  else
+  it { should exist }
+  it { should be_directory }
+  if os[:family] != "freebsd"
     it { should exist }
     it { should be_directory }
     it { should be_owned_by user }
@@ -160,7 +157,7 @@ describe command "#{bin_dir}/opensearch-dashboards-plugin list" do
   let(:sudo_options) { "-u #{user} " }
   its(:exit_status) { should eq 0 }
   its(:stderr) { should eq "" }
-  its(:stdout) { should match(/securityDashboards/)}
+  its(:stdout) { should match(/securityDashboards/) }
 end
 
 ports.each do |p|
