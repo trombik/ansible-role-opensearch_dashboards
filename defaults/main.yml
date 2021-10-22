@@ -3,9 +3,33 @@ opensearch_dashboards_user: "{{ __opensearch_dashboards_user }}"
 opensearch_dashboards_group: "{{ __opensearch_dashboards_group }}"
 opensearch_dashboards_package: "{{ __opensearch_dashboards_package }}"
 opensearch_dashboards_log_dir: "{{ __opensearch_dashboards_log_dir }}"
+opensearch_dashboards_log_file: "{{ opensearch_dashboards_log_dir }}/opensearch-dashboards.log"
 opensearch_dashboards_service: "{{ __opensearch_dashboards_service }}"
 opensearch_dashboards_conf_dir: "{{ __opensearch_dashboards_conf_dir }}"
 opensearch_dashboards_conf_file: "{{ opensearch_dashboards_conf_dir }}/opensearch_dashboards.yml"
 opensearch_dashboards_bind_address: localhost
 opensearch_dashboards_bind_port: 5601
 opensearch_dashboards_flags: ""
+opensearch_dashboards_root_dir: "{{ __opensearch_dashboards_root_dir }}"
+opensearch_dashboards_data_dir: "{{ __opensearch_dashboards_data_dir }}"
+
+opensearch_dashboards_src_dist_version: "1.1.0"
+opensearch_dashboards_src_dist_name: "opensearch-dashboards-{{ opensearch_dashboards_src_dist_version }}"
+opensearch_dashboards_src_baseurl: "https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/{{ opensearch_dashboards_src_dist_version }}"
+opensearch_dashboards_src_url: "{{ opensearch_dashboards_src_baseurl }}/opensearch-dashboards-{{ opensearch_dashboards_src_dist_version }}-linux-x64.tar.gz"
+opensearch_dashboards_src_gitnature_url: "{{ opensearch_dashboards_src_baseurl }}/opensearch-dashboards-{{ opensearch_dashboards_src_dist_version }}-linux-x64.tar.gz.sig"
+opensearch_dashboards_src_dir: "/var/dist"
+opensearch_dashboards_src_file: "{{ opensearch_dashboards_src_dir }}/{{ opensearch_dashboards_src_dist_name }}-linux-x64.tar.gz"
+opensearch_dashboards_src_sig_url: "{{ opensearch_dashboards_src_baseurl }}/opensearch-dashboards-{{ opensearch_dashboards_src_dist_version }}-linux-x64.tar.gz.sig"
+opensearch_dashboards_src_sig_file: "{{ opensearch_dashboards_src_dir }}/opensearch-dashboards-{{ opensearch_dashboards_src_dist_version }}-linux-x64.tar.gz.sig"
+opensearch_dashboards_src_pgp_key_url: https://artifacts.opensearch.org/publickeys/opensearch.pgp
+opensearch_dashboards_src_pgp_key_file: "{{ opensearch_dashboards_src_dir }}/opensearch.pgp"
+# see https://opensearch.org/verify-signatures.html for the fingerprint
+opensearch_dashboards_src_pgp_key_fingerprint: C5B7 4989 65EF D1C2 924B A9D5 39D3 1987 9310 D3FC
+opensearch_dashboards_src_pgp_key_fingerprint_file: "{{ opensearch_dashboards_src_dir }}/opensearch.pgp.fingerprint"
+opensearch_dashboards_src_tasks_base_dir: "{{ opensearch_dashboards_src_dir }}"
+opensearch_dashboards_src_tasks_file:
+  sig_verified: "{{ opensearch_dashboards_src_tasks_base_dir }}/.sig_verified-{{ opensearch_dashboards_src_dist_name }}"
+  key_verified: "{{ opensearch_dashboards_src_tasks_base_dir }}/.key_verified-{{ opensearch_dashboards_src_dist_name }}"
+  key_imported: "{{ opensearch_dashboards_src_tasks_base_dir }}/.key_imported-{{ opensearch_dashboards_src_dist_name }}"
+  src_extracted: "{{ opensearch_dashboards_src_tasks_base_dir }}/.src_extracted-{{ opensearch_dashboards_src_dist_name }}"

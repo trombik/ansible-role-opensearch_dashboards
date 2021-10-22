@@ -13,7 +13,20 @@
     dest: "{{ opensearch_dashboards_conf_file }}"
   notify: Restart opensearch_dashboards
 
+- name: Ensure data directory is writable by opensearch_dashboards_user
+  ansible.builtin.file:
+    path: "{{ opensearch_dashboards_data_dir }}"
+    mode: "0755"
+    owner: "{{ opensearch_dashboards_user }}"
+    group: "{{ opensearch_dashboards_group }}"
+    state: directory
+
 - name: Start opensearch_dashboards
   ansible.builtin.service:
     name: "{{ opensearch_dashboards_service }}"
     state: started
+
+- name: Wait for opensearch_dashboards in task
+  ansible.builtin.wait_for:
+    host: "{{ opensearch_dashboards_bind_address }}"
+    port: "{{ opensearch_dashboards_bind_port }}"
