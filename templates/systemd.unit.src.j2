@@ -1,0 +1,13 @@
+# Managed by ansible
+[Unit]
+Description=opensearch-dashboards daemon
+
+[Service]
+ExecStart={{ opensearch_dashboards_root_dir }}/bin/opensearch-dashboards --log-file {{ opensearch_dashboards_log_file | quote }} --config {{ opensearch_dashboards_conf_file | quote }}
+ExecStop=/bin/kill -s QUIT $MAINPID
+Type=simple
+User={{ opensearch_dashboards_user }}
+Group={{ opensearch_dashboards_group }}
+
+[Install]
+WantedBy=multi-user.target

@@ -4,3 +4,10 @@
   ansible.builtin.service:
     name: "{{ opensearch_dashboards_service }}"
     state: restarted
+  notify:
+    - Wait for opensearch_dashboards in handler
+
+- name: Wait for opensearch_dashboards in handler
+  ansible.builtin.wait_for:
+    host: "{{ opensearch_dashboards_bind_address }}"
+    port: "{{ opensearch_dashboards_bind_port }}"

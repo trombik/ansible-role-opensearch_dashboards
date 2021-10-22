@@ -4,6 +4,9 @@
     - ansible-role-opensearch_dashboards
   vars:
     opensearch_dashboards_config:
+      server.host: "{{ opensearch_dashboards_bind_address }}"
+      server.port: "{{ opensearch_dashboards_bind_port }}"
+      path.data: "{{ opensearch_dashboards_data_dir }}"
       opensearch.hosts: ["http://localhost:9200"]
       opensearch.ssl.verificationMode: none
       opensearch.username: "kibanaserver"

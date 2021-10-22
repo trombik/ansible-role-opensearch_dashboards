@@ -28,11 +28,17 @@ platforms:
     driver_config:
       ssh:
         shell: '/bin/sh'
-      network:
-        - ["forwarded_port", {guest: 5601, host: 5601}]
     provisioner:
       extra_vars:
         ansible_python_interpreter: '/usr/local/bin/python3'
+
+  - name: ubuntu-20.04-amd64
+    driver:
+      box: trombik/ansible-ubuntu-20.04-amd64
+      box_check_update: false
+    provisioner:
+      extra_vars:
+        ansible_python_interpreter: '/usr/bin/python3'
 
 suites:
   - name: default

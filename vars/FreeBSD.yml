@@ -5,3 +5,5 @@ __opensearch_dashboards_package: opensearch-dashboards
 __opensearch_dashboards_conf_dir: /usr/local/etc/opensearch-dashboards
 __opensearch_dashboards_log_dir: /var/log
 __opensearch_dashboards_service: opensearch-dashboards
+__opensearch_dashboards_root_dir: /usr/local/www/openseach-dashboards
+__opensearch_dashboards_data_dir: /var/db/openseach-dashboards
