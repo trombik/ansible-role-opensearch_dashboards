@@ -20,7 +20,7 @@ The port depends on old, deprecated `node10`. `node10` has been removed from
 the ports tree. As a result, my repository includes changes to `node` ports,
 reviving `node10`. In short, do not use it unless you know what you are doing.
 
-## For Debian users
+## For Debian-variants and CentOS users
 
 The role installs `opensearch-dashboards` from the official tar archive. This
 is a huge hack until when Amazon or distributions release packages.
