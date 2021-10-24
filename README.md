@@ -31,7 +31,7 @@ Changes from the default includes:
 * log file is under `/var/log/opensearch-dashboards`
 * `path.data` is `/var/lib/opensearch-dashboards`
 * the application is installed under `/var/www/opensearch-dashboards`
-* the user to run the application is `www-data`
+* the user to run the application is `opensearch_dashboards`
 
 The changes will be updated when an official package is available.
 
