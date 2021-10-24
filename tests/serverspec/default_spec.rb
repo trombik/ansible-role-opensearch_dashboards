@@ -12,7 +12,7 @@ config_dir = case os[:family]
              end
 config = "#{config_dir}/opensearch_dashboards.yml"
 install_method = case os[:family]
-                 when "ubuntu"
+                 when "ubuntu", "redhat"
                    "src"
                  else
                    "default"
@@ -34,14 +34,14 @@ user = case os[:family]
        when "freebsd"
          "www"
        else
-         "www-data"
+         "opensearch_dashboards"
        end
 
 group = case os[:family]
         when "freebsd"
           "www"
         else
-          "www-data"
+          "opensearch_dashboards"
         end
 log_dir = case os[:family]
           when "freebsd"
@@ -55,7 +55,7 @@ src_root_dir = "/var/www/opensearch-dashboards"
 bin_dir = case os[:family]
           when "freebsd"
             "/usr/local/www/opensearch-dashboards/bin"
-          when "ubuntu"
+          when "ubuntu", "redhat"
             "#{src_root_dir}/bin"
           end
 

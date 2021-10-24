@@ -1,0 +1,140 @@
+---
+# a huge hack until when Amazon or distributions release packages.
+
+- name: Create opensearch_dashboards_group
+  group:
+    name: "{{ opensearch_dashboards_group }}"
+
+- name: Create opensearch_dashboards_user
+  user:
+    name: "{{ opensearch_dashboards_user }}"
+    group: "{{ opensearch_dashboards_group }}"
+    home: "{{ opensearch_dashboards_root_dir }}"
+    create_home: no
+    system: yes
+    comment: OpenSearch dashboards user
+
+- name: Install gpg (apt)
+  ansible.builtin.apt:
+    name: gpg
+    state: present
+  when:
+    - ansible_os_family == 'Debian'
+
+- name: Install gpg (yum)
+  ansible.builtin.yum:
+    name: gpg
+    state: present
+  when:
+    - ansible_os_family == 'RedHat'
+
+- name: Create opensearch_dashboards_src_dir
+  ansible.builtin.file:
+    path: "{{ opensearch_dashboards_src_dir }}"
+    mode: "0755"
+    state: directory
+
+- name: Download PGP key from opensearch.org
+  ansible.builtin.get_url:
+    url: "{{ opensearch_dashboards_src_pgp_key_url }}"
+    mode: "0644"
+    dest: "{{ opensearch_dashboards_src_pgp_key_file }}"
+  register: __register_opensearch_dashboards_get_url_pgp_key
+
+- name: Delete all files of opensearch_dashboards_src_tasks_file when PGP key is downloaded
+  ansible.builtin.file:
+    path: "{{ opensearch_dashboards_src_tasks_file[item] }}"
+    state: absent
+  with_items: "{{ opensearch_dashboards_src_tasks_file.keys() | list }}"
+  when:
+    - __register_opensearch_dashboards_get_url_pgp_key['changed']
+
+- name: Create opensearch_dashboards_src_pgp_key_fingerprint_file
+  # XXX do not use FQCN here for older ansible version
+  shell:
+    cmd: "gpg {% if ansible_os_family == 'Debian' %}--show-keys{% else %}--with-fingerprint{% endif %} --with-colons {{ opensearch_dashboards_src_pgp_key_file | quote }} > {{ opensearch_dashboards_src_pgp_key_fingerprint_file | quote  }}"
+    creates: "{{ opensearch_dashboards_src_pgp_key_fingerprint_file }}"
+  environment:
+    HOME: "/root"
+
+- name: Do verify PGP key with known fingerprint (gpg)
+  # XXX any GPG guru here? there should be a better way to verify fingerprint
+  shell:
+    cmd: "grep 'fpr:.*:.*:.*:.*:.*:.*:.*:.*:{{ opensearch_dashboards_src_pgp_key_fingerprint | regex_replace('\\s+', '') }}:' {{ opensearch_dashboards_src_pgp_key_fingerprint_file | quote }} && touch {{ opensearch_dashboards_src_tasks_file['key_verified'] | quote }}"
+    creates: "{{ opensearch_dashboards_src_tasks_file['key_verified'] }}"
+
+- name: Do import PGP key
+  shell:
+    cmd: "gpg --import {{ opensearch_dashboards_src_pgp_key_file | quote }} && touch {{ opensearch_dashboards_src_tasks_file['key_imported'] | quote }}"
+    creates: "{{ opensearch_dashboards_src_tasks_file['key_imported'] }}"
+  environment:
+    HOME: "/root"
+
+- name: Fetch opensearch_dashboards_src_file
+  ansible.builtin.get_url:
+    url: "{{ opensearch_dashboards_src_url }}"
+    dest: "{{ opensearch_dashboards_src_file }}"
+    mode: "0644"
+
+- name: Fetch opensearch_dashboards_src_sig_file
+  ansible.builtin.get_url:
+    url: "{{ opensearch_dashboards_src_sig_url }}"
+    dest: "{{ opensearch_dashboards_src_sig_file }}"
+    mode: "0644"
+
+- name: Do verify opensearch_dashboards_src_file with imported opensearch_dashboards_src_pgp_key_file
+  shell:
+    cmd: "gpg --verify {{ opensearch_dashboards_src_sig_file | quote }} {{ opensearch_dashboards_src_file | quote }} && touch {{ opensearch_dashboards_src_tasks_file['sig_verified'] | quote }}"
+    creates: "{{ opensearch_dashboards_src_tasks_file['sig_verified'] }}"
+  environment:
+    HOME: "/root"
+
+- name: Create opensearch_dashboards_root_dir
+  ansible.builtin.file:
+    path: "{{ opensearch_dashboards_root_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Do unarchive opensearch_dashboards_src_file
+  shell:
+    cmd: "tar -xf {{ opensearch_dashboards_src_file | quote }} -C {{ opensearch_dashboards_root_dir | quote }} --strip-components=1 --no-same-owner --same-permissions --owner=root --group=root --keep-newer-files && touch {{ opensearch_dashboards_src_tasks_file['src_extracted'] | quote }}"
+    creates: "{{ opensearch_dashboards_src_tasks_file['src_extracted'] }}"
+
+- name: Create opensearch_dashboards_log_dir
+  ansible.builtin.file:
+    path: "{{ opensearch_dashboards_log_dir }}"
+    mode: "0755"
+    owner: "{{ opensearch_dashboards_user }}"
+    group: "{{ opensearch_dashboards_group }}"
+    state: directory
+
+- name: Create opensearch_dashboards_conf_dir
+  ansible.builtin.file:
+    path: "{{ opensearch_dashboards_conf_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Create systemd unit file
+  ansible.builtin.template:
+    src: systemd.unit.src.j2
+    dest: "/lib/systemd/system/{{ opensearch_dashboards_service }}.service"
+  register: __register_opensearch_dashboards_systemd_unit_file
+  notify:
+    - Restart opensearch_dashboards
+
+- name: Create symlink to systemd unit file
+  ansible.builtin.file:
+    dest: "/etc/systemd/system/{{ opensearch_dashboards_service }}.service"
+    src: "/lib/systemd/system/{{ opensearch_dashboards_service }}.service"
+    state: link
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  when:
+    - __register_opensearch_dashboards_systemd_unit_file['changed']
+
+- name: Enable opensearch_dashboards_service
+  ansible.builtin.service:
+    name: "{{ opensearch_dashboards_service }}"
+    enabled: yes
